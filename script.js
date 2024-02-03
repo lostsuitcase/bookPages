@@ -1,88 +1,242 @@
-const canvas = document.getElementById('canvas1');
+const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-const particlesArray = [];
-let hue = 0;
 
-window.addEventListener('resize', function(){
-	canvas.width = window.innerWidth;
-	canvas.height = window.innerHeight;
-});
+////fillRect()
+//ctx.fillStyle = 'purple';
+//ctx.fillRect(20, 20, 150, 100);
+//ctx.fillStyle = 'pink';
+//ctx.fillRect(200, 20, 150, 100);
+//
+////strokeRect()
+//ctx.lineWidth = 5;
+//ctx.strokeStyle = 'yellow';
+//ctx.strokeRect(100, 150, 150, 100);
+//
+////clearRect()
+//ctx.clearRect(25, 25, 100, 80);
+//
+////fillText()
+//ctx.font = '30px Arial';
+//ctx.fillStyle = 'pink';
+//ctx.fillText('Hello Dani', 400, 50);
+//
+////strokeText()
+//ctx.font = '35px Futura';
+//ctx.lineWidth = 1;
+//ctx.strokeStyle = 'yellow';
+//ctx.strokeText('Hello Dani', 400, 100);
 
-const mouse = {
-	x: undefined,
-	y: undefined,
+//Paths
+
+////Triangle
+//ctx.beginPath();
+//ctx.moveTo(50, 50);
+//ctx.lineTo(150, 50);
+//ctx.lineTo(100, 200);8
+//ctx.closePath();
+//ctx.fillStyle = 'coral';
+//ctx.fill();
+//
+//ctx.beginPath();
+//ctx.moveTo(200, 50);
+//ctx.lineTo(150, 200);
+//ctx.lineTo(250, 200);
+//ctx.closePath();
+//ctx.stroke();
+//
+////Rectangle
+//ctx.beginPath();
+//ctx.rect(300, 50, 150, 100);
+//ctx.fillStyle = 'teal';
+//ctx.fill();
+
+////Arc (circles)
+//ctx.beginPath();
+//
+//const centerX = canvas.width / 2;
+//const centerY = canvas.height / 2;
+//
+////Draw head
+//ctx.arc(centerX, centerY, 200, 0, Math.PI * 2);
+//
+////Move to mouth
+//ctx.moveTo(centerX + 100, centerY);
+//
+////Draw the mouth
+//ctx.arc(centerX, centerY, 100, 0, Math.PI, false);
+//
+////Move to left eye
+//ctx.moveTo(centerX - 60, centerY - 80);
+//
+////Draw left eye
+//ctx.arc(centerX - 80, centerY - 80, 20, 0, Math.PI * 2);
+//
+////Move to roght eye
+//ctx.moveTo(centerX + 100, centerY - 80);
+//
+////Draw right eye
+//ctx.arc(centerX + 80, centerY - 80, 20, 0, Math.PI * 2);
+//
+//ctx.lineWidth = 3;
+//ctx.stroke();
+
+////Animation 1
+//const circle = {
+//	x: 200,
+//	y: 200,
+//	size: 30,
+//	dx: 5,
+//	dy: 4
+//}
+//
+//function drawCircle() {
+//	ctx.beginPath();
+//	ctx.arc(circle.x, circle.y, circle.size, 0, Math.PI * 2);
+//	ctx.fillStyle = 'coral';
+//	ctx.fill();
+//}
+//
+//function update() {
+//	ctx.clearRect(0, 0, canvas.width, canvas.height);
+//	
+//	drawCircle();
+//	
+//	//Change position
+//	circle.x += circle.dx;
+//	circle.y += circle.dy;
+//	
+//	//Detect side walls
+//	if(circle.x + circle.size > canvas.width || circle.x - circle.size < 0) {
+//		circle.dx *= -1;
+//	}
+//	
+//	//Detect top and bottom walls
+//	if(circle.y + circle.size > canvas.height || circle.y - circle.size < 0) {
+//		circle.dy *= -1;
+//	}
+//	
+//	requestAnimationFrame(update);
+//}
+//
+//update();
+
+//Animation 2 - character
+const image = document.getElementById('source');
+
+const player = {
+	w: 100,
+	h: 199,
+	x: 20,
+	y: 200,
+	speed: 4,
+	dx: 0,
+	dy: 0
+};
+
+function drawPlayer() {
+	ctx.drawImage(image, player.x, player.y, player.w, player.h);
 }
-canvas.addEventListener('click', function(event){
-	mouse.x = event.x;
-	mouse.y = event.y;
-	for (let i = 0; i < 10; i++){
-		particlesArray.push(new Particle());
-	}	
-});
 
-canvas;addEventListener('mousemove', function(event){
-	mouse.x = event.x;
-	mouse.y = event.y;
-	for (let i = 0; i < 4; i++){
-		particlesArray.push(new Particle());
-	}	
-})
-
-class Particle {
-	constructor(){
-		this.x = mouse.x;
-		this.y = mouse.y;
-		this.size = Math.random() * 15 + 1;
-		this.speedX = Math.random() * 3 - 1.5;
-		this.speedY = Math.random() * 3 - 1.5;
-		this.color = 'hsl(' + hue + ', 100%, 50%)';
-	}
-	update(){
-		this.x += this.speedX;
-		this.y += this.speedY;
-		if (this.size > 0.2) this.size -= 0.1;
-	}
-	draw(){
-	ctx.fillStyle = this.color;
-	ctx.beginPath();
-	ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-	ctx.fill();		
-	}
-}
-
-function handleParticles(){
-	for (let i = 0; i < particlesArray.length; i++){
-		particlesArray[i].update();
-		particlesArray[i].draw();
-		for (let j = i; j < particlesArray.length; j++){
-			const dx = particlesArray[i].x - particlesArray[j].x;
-			const dy = particlesArray[i].y - particlesArray[j].y;
-			const distance = Math.sqrt(dx * dx + dy * dy);
-			if (distance < 100){
-				ctx.beginPath();
-				ctx.strokeStyle = particlesArray[i].color;
-				ctx.lineWidth = 0.2;
-				ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-				ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-				ctx.stroke();
-			}
-		}
-		if (particlesArray[i].size <= 0.3){
-			particlesArray.splice(i, 1);
-			i--;
-		} 
-	}
-}
-
-function animate(){
+function clear() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	//ctx.fillStyle = 'rgba(0,0,0,0.02)';
-	//ctx.fillRect(0, 0, canvas.width, canvas.height);
-	handleParticles();
-	hue+=2;
-	requestAnimationFrame(animate);
 }
 
-animate();
+function newPos() {
+	player.x += player.dx;
+	player.y += player.dy;
+	detectWalls();
+}
+
+function detectWalls() {
+	//Left wall
+	if(player.x < 0) {
+		player.x = 0;
+	}
+	//Right wall
+	if(player.x + player.w > canvas.width) {
+		player.x = canvas.width - player.w;
+	}
+	//Top wall
+	if(player.y < 0) {
+		player.y = 0;
+	}
+	//Bottom wall
+	if(player.y + player.h > canvas.height) {
+		player.y = canvas.height - player.h;
+	}
+}
+
+function update() {
+	clear();
+	drawPlayer();
+	newPos();
+	requestAnimationFrame(update);
+}
+
+function moveUp() {
+	player.dy = -player.speed;
+}
+function moveDown() {
+	player.dy = player.speed;
+}
+function moveLeft() {
+	player.dx = -player.speed;
+}
+function moveRight() {
+	player.dx = player.speed;
+}
+
+function keyDown(e){
+	if(e.key === 'ArrowRight' || e.key === 'Right'){
+		moveRight();
+	} else if(e.key === 'ArrowLeft' || e.key === 'Left') {
+		moveLeft();
+	} else if(e.key === 'ArrowUp' || e.key === 'Up') {
+		moveUp();
+	} else if(e.key === 'ArrowDown' || e.key === 'Down') {
+		moveDown();
+	}
+}
+function keyUp(e){
+	if (
+		e.key == 'Right' ||
+		e.key == 'ArrowRight' ||
+		e.key == 'Left' ||
+		e.key == 'ArrowLeft' ||
+		e.key == 'Up' ||
+		e.key == 'ArrowUp' ||
+		e.key == 'Down' ||
+		e.key == 'ArrowDown'
+	){
+		player.dx = 0;
+		player.dy = 0;
+	}
+}
+
+update();
+
+document.addEventListener('keydown', keyDown);
+document.addEventListener('keyup', keyUp);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
